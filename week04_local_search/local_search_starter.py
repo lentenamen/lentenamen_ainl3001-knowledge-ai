@@ -101,7 +101,7 @@ def count_conflicts(board):
 # TASK 2 — EXPLORE THE PROBLEM
 # --------------------------------------------------
 
-def generate_neighbours(problem, board):
+def generate_neighbours(problem, state):
     """
     Generate all neighbouring boards.
 
@@ -119,9 +119,9 @@ def generate_neighbours(problem, board):
     # 2. Apply each action.
     # 3. Add the resulting state to neighbours.
 
-    for action in problem.actions(board):
+    for action in problem.actions(state):
         neighbours.append(
-            problem.result(board, action)
+            problem.result(state, action)
         )
 
     return neighbours
