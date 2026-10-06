@@ -33,7 +33,7 @@ import random
 
 from queens_problem import QueensProblem
 
-N = 8
+N = 20
 
 
 # --------------------------------------------------
@@ -193,7 +193,10 @@ def simulated_annealing(problem, start_board):
     current = start_board
 
     temperature = 10.0
-    cooling_rate = 0.95
+
+    # Slow cooling gives the search enough steps to explore.
+    # (0.95 only allowed ~135 steps before the temperature hit 0.01.)
+    cooling_rate = 0.999
 
     while temperature > 0.01:
 
@@ -212,6 +215,88 @@ def simulated_annealing(problem, start_board):
         temperature *= cooling_rate
 
     return current
+
+
+# --------------------------------------------------
+# EXTENSION 2 — RANDOM RESTART HILL CLIMBING
+# --------------------------------------------------
+
+def random_board(n):
+    """
+    Return a random board with one queen per column.
+    """
+
+    return [
+        random.randint(0, n - 1)
+        for _ in range(n)
+    ]
+
+
+def random_restart_hill_climbing(n, max_restarts=100):
+    """
+    Run Hill Climbing from random starting boards
+    until a solution is found or we run out of restarts.
+
+    Returns the best board found and the number of
+    Hill Climbing runs used.
+    """
+
+    best = None
+
+    for attempt in range(1, max_restarts + 1):
+
+        start = random_board(n)
+        problem = QueensProblem(start)
+
+        result = hill_climbing(problem, start)
+
+        if best is None or count_conflicts(result) < count_conflicts(best):
+            best = result
+
+        if count_conflicts(best) == 0:
+            return best, attempt
+
+    return best, max_restarts
+
+
+# --------------------------------------------------
+# TASK 5.1 — COMPARE THE ALGORITHMS
+# --------------------------------------------------
+
+def compare_algorithms(n, runs=20):
+    """
+    Run Hill Climbing and Simulated Annealing from the
+    same random starting boards and record the final costs.
+    """
+
+    hc_costs = []
+    sa_costs = []
+
+    for _ in range(runs):
+
+        start = random_board(n)
+        problem = QueensProblem(start)
+
+        hc_costs.append(
+            count_conflicts(hill_climbing(problem, start))
+        )
+        sa_costs.append(
+            count_conflicts(simulated_annealing(problem, start))
+        )
+
+    print(f"\nComparison over {runs} runs (N = {n})")
+    print(f"{'Algorithm':<22}{'Best':>6}{'Mean':>8}{'Solved':>9}")
+
+    for name, costs in [
+        ("Hill Climbing", hc_costs),
+        ("Simulated Annealing", sa_costs),
+    ]:
+        solved = costs.count(0)
+        mean = sum(costs) / len(costs)
+        print(f"{name:<22}{min(costs):>6}{mean:>8.2f}{solved:>6}/{runs}")
+
+    print("\nHill Climbing costs:      ", hc_costs)
+    print("Simulated Annealing costs:", sa_costs)
 
 
 # --------------------------------------------------
@@ -267,3 +352,17 @@ if __name__ == "__main__":
 
     print(sa_board)
     print(f"Conflicts: {count_conflicts(sa_board)}")
+
+    compare_algorithms(N)
+
+    print("\nRandom Restart Hill Climbing")
+
+    for max_restarts in [1, 5, 20, 100]:
+
+        rr_board, used = random_restart_hill_climbing(N, max_restarts)
+
+        print(
+            f"max_restarts={max_restarts:<4} "
+            f"runs used={used:<4} "
+            f"conflicts={count_conflicts(rr_board)}  {rr_board}"
+        )
