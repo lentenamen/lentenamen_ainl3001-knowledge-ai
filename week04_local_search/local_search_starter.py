@@ -83,7 +83,18 @@ def count_conflicts(board):
     #   1. in the same row
     #   2. on the same diagonal
 
-    pass
+    conflicts = 0
+
+    for i in range(len(board)):
+        for j in range(i + 1, len(board)):
+
+            same_row = board[i] == board[j]
+            same_diagonal = abs(board[i] - board[j]) == j - i
+
+            if same_row or same_diagonal:
+                conflicts += 1
+
+    return conflicts
 
 
 # --------------------------------------------------
@@ -107,6 +118,11 @@ def generate_neighbours(problem, board):
     # 1. Ask the problem for the available actions.
     # 2. Apply each action.
     # 3. Add the resulting state to neighbours.
+
+    for action in problem.actions(board):
+        neighbours.append(
+            problem.result(board, action)
+        )
 
     return neighbours
 
@@ -142,9 +158,21 @@ def hill_climbing(problem, start_board):
 
     current = start_board
 
-    # TODO
+    while True:
 
-    pass
+        neighbours = generate_neighbours(problem, current)
+
+        best_neighbour = min(
+            neighbours,
+            key=count_conflicts
+        )
+
+        if count_conflicts(best_neighbour) >= count_conflicts(current):
+            break
+
+        current = best_neighbour
+
+    return current
 
 
 # --------------------------------------------------
@@ -167,9 +195,23 @@ def simulated_annealing(problem, start_board):
     temperature = 10.0
     cooling_rate = 0.95
 
-    # TODO
+    while temperature > 0.01:
 
-    pass
+        if count_conflicts(current) == 0:
+            break
+
+        action = random.choice(problem.actions(current))
+        neighbour = problem.result(current, action)
+
+        # Positive delta means the neighbour is worse.
+        delta = count_conflicts(neighbour) - count_conflicts(current)
+
+        if delta < 0 or random.random() < math.exp(-delta / temperature):
+            current = neighbour
+
+        temperature *= cooling_rate
+
+    return current
 
 
 # --------------------------------------------------
@@ -211,3 +253,17 @@ if __name__ == "__main__":
     print(
         f"{len(neighbours)} neighbours generated"
     )
+
+    print("\nHill Climbing")
+
+    hc_board = hill_climbing(problem, board)
+
+    print(hc_board)
+    print(f"Conflicts: {count_conflicts(hc_board)}")
+
+    print("\nSimulated Annealing")
+
+    sa_board = simulated_annealing(problem, board)
+
+    print(sa_board)
+    print(f"Conflicts: {count_conflicts(sa_board)}")
