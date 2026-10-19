@@ -75,7 +75,11 @@ def is_valid_assignment(assignment):
     # 2. If BOTH regions have been assigned, compare their colours.
     # 3. Return False if neighbouring regions have the same colour.
     # 4. Otherwise return True.
-    pass
+    for region1, region2 in constraints:
+        if region1 in assignment and region2 in assignment:
+            if assignment[region1] == assignment[region2]:
+                return False
+    return True
 
 
 # --------------------------------------------------
