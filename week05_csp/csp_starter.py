@@ -70,7 +70,6 @@ constraints = [
 
 def is_valid_assignment(assignment):
     """Return True if a complete OR partial assignment is valid."""
-    # TODO:
     # 1. Loop over neighbouring pairs in constraints.
     # 2. If BOTH regions have been assigned, compare their colours.
     # 3. Return False if neighbouring regions have the same colour.
@@ -95,11 +94,11 @@ def select_unassigned_variable(assignment):
     choose the unassigned region with the FEWEST currently legal
     colours. Break ties by keeping the first region in variables.
     """
-    # TASK 3 TODO:
+    # TASK 3 
     # Return the first variable not in assignment, or None if all
     # variables have been assigned.
     #
-    # TASK 5 TODO (after backtracking works):
+    # TASK 5  (after backtracking works):
     # For each unassigned variable, temporarily try each colour,
     # check is_valid_assignment(), and undo the temporary assignment.
     # Count legal colours and choose the variable with the fewest.
@@ -198,7 +197,15 @@ if __name__ == "__main__":
 
     print("\nPossible complete assignments:", 3 ** len(variables))
     print("\nReflection:")
+    
     print("1. What causes backtracking?")
+    print("Backtracking occurs when an attempted assignment cannot lead to a valid solution. The algorithm removes the most recent assignment and tries another value.")
     print("2. Why can backtracking be faster than brute force?")
+    print("Brute force could generate all possible complete assignments and then check whether each is valid.")
     print("3. Why might MRV reduce search?")
+    print("It chooses the unassigned variable with the fewest currently legal values remaining.")
     print("4. How could this model represent timetabling?")
+    print("We can use the same three CSP components such as variables, domains and constraints, to represent a timetabling problem.")
+    print("variables: Lectures or classes")
+    print("domains: Available room and time-slot combinations")
+    print("constraints: Classes cannot clash in rooms, times or lecturer availability")
