@@ -263,6 +263,19 @@ if __name__ == "__main__":
 
     print("\nReflection:")
     print("1. Why is Tic-Tac-Toe a search problem?")
+    print("Tic-Tac-Toe has states (board positions), actions (legal moves), a transition function (make_move) and terminal states with utilities. Finding the best move means " \
+    "\nsearching the tree of possible future positions to see which move leads to the best outcome.")
+    print("\n")
+
     print("2. Why does Minimax assume an optimal opponent?")
+    print("Minimax assumes the opponent always picks the move that is worst for us. This gives a guaranteed worst-case result: if the opponent plays worse than optimally, we can only do as well or better. It also makes the game-tree values well defined, with MAX choosing the highest value and MIN the lowest.")
+    print("\n")
+
+
     print("3. What is the purpose of a utility function?")
+    print("The utility function gives each terminal state a number (+1 for an X win, -1 for an O win, 0 for a draw). Minimax backs these values up the tree, so it can compare moves and choose the one with the best guaranteed outcome.")
+    print("\n")
+
+
     print("4. What happens as games become larger?")
+    print("The game tree grows exponentially with the branching factor and depth, so searching to the end becomes impossible. Tic-Tac-Toe from an empty board has 549,946 Minimax nodes, but chess and Go are vastly larger. Larger games need Alpha-Beta pruning (18,297 nodes from an empty board), depth-limited search and heuristic evaluation functions to estimate non-terminal positions.")
